@@ -1,7 +1,29 @@
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import React from 'react';
+import { Button } from 'react-bootstrap';
+import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import auth from '/firebase/firebaseApp'
 
 const Login = () => {
+    const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
+    const router = useRouter();
+
+    if (user) {
+        router.push('/')
+    }
+
+    if (error) {
+        return (
+            <div>
+                <p>Error: {error.message}</p>
+            </div>
+        );
+    }
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
     return (
         <div>
             <Head>
@@ -11,20 +33,23 @@ const Login = () => {
             </Head>
             <main style={{ height: '100vh' }} className='bg-primary d-flex justify-content-center align-items-center'>
                 <div className="card">
-                    <form className='card-body'>
-                        <div class="mb-3">
-                            <input type="email" placeholder='Email Address' class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                            <div id="emailHelp" class="form-text">We&apos;ll never share your email with anyone else.</div>
-                        </div>
-                        <div class="mb-3">
-                            <input type="password" placeholder='Password' class="form-control" id="exampleInputPassword1" />
-                        </div>
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1" />
-                            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Sign in</button>
-                    </form>
+                    <div className='card-body'>
+                        <form >
+                            <div class="mb-3">
+                                <input type="email" placeholder='Email Address' class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+                                <div id="emailHelp" class="form-text">We&apos;ll never share your email with anyone else.</div>
+                            </div>
+                            <div class="mb-3">
+                                <input type="password" placeholder='Password' class="form-control" id="exampleInputPassword1" />
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="exampleCheck1" />
+                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Sign in</button>
+                        </form>
+                        <Button variant='outline-primary' className='w-100 mt-2' onClick={() => signInWithGoogle()}>Sign in with Google</Button>
+                    </div>
                 </div>
             </main>
         </div>
